@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import type { CommandSuggestion, AnalysisResult } from "../ai/index.js";
+import { theme } from "./theme.js";
 
 const ICONS = {
   robot: "🤖",
@@ -12,12 +13,13 @@ const ICONS = {
 };
 
 export function printHeader(): void {
-  console.log(chalk.cyan.bold(`\n${ICONS.robot} thefuckai\n`));
+  // Clean header using theme
+  console.log(theme.header(`\n${ICONS.robot} thefuckai\n`));
 }
 
 export function printExplanation(result: AnalysisResult): void {
   if (result.explanation) {
-    console.log(chalk.white(result.explanation));
+    console.log(theme.explanation(result.explanation));
     console.log();
   }
 }
@@ -29,12 +31,13 @@ let lastPrintedLength = 0;
  */
 export function printStreamingExplanation(fullText: string): void {
   if (!fullText) return;
-
+  
   // Calculate the new chunk to print
   const newText = fullText.slice(lastPrintedLength);
-
+  
   if (newText) {
-    process.stdout.write(chalk.white(newText));
+    // Use theme explanation color
+    process.stdout.write(theme.explanation(newText));
     lastPrintedLength = fullText.length;
   }
 }
@@ -49,38 +52,42 @@ export function finalizeStreaming(): void {
 
 export function printSuggestion(suggestion: CommandSuggestion): void {
   const confidenceColor = {
-    high: chalk.green,
-    medium: chalk.yellow,
-    low: chalk.red,
+    high: theme.confidenceHigh,
+    medium: theme.confidenceMedium,
+    low: theme.confidenceLow,
   }[suggestion.confidence];
 
-  console.log(chalk.cyan(`${ICONS.lightbulb} Suggested command:`));
+  console.log(theme.suggestionLabel(`${ICONS.lightbulb} Suggested fix:`));
   console.log();
-  console.log(chalk.bgGray.white.bold(`  ${ICONS.command} ${suggestion.command}  `));
+  // Using theme.command color
+  console.log(theme.command(`  ${ICONS.command} ${suggestion.command}  `));
   console.log();
-
-  console.log(chalk.gray("Confidence: ") + confidenceColor(suggestion.confidence));
+  
+  console.log(
+    theme.muted("Confidence: ") + 
+    confidenceColor(suggestion.confidence)
+  );
   console.log();
 }
 
 export function printError(message: string): void {
-  console.error(chalk.red(`${ICONS.error} ${message}`));
+  console.error(theme.error(`${ICONS.error} ${message}`));
 }
 
 export function printWarning(message: string): void {
-  console.log(chalk.yellow(`${ICONS.warning} ${message}`));
+  console.log(theme.warning(`${ICONS.warning} ${message}`));
 }
 
 export function printSuccess(message: string): void {
-  console.log(chalk.green(`${ICONS.success} ${message}`));
+  console.log(theme.success(`${ICONS.success} ${message}`));
 }
 
 export function printCommand(label: string, command: string): void {
-  console.log(chalk.gray(`${label}: `) + chalk.white(command));
+  console.log(theme.muted(`${label}: `) + theme.text(command));
 }
 
 export function printVerbose(message: string, verbose: boolean): void {
   if (verbose) {
-    console.log(chalk.gray(`[debug] ${message}`));
+    console.log(theme.muted(`[debug] ${message}`));
   }
 }

@@ -15,6 +15,7 @@ import {
   confirmCommand,
   editCommand,
   runCommand,
+  createHackingAnimation,
 } from "./ui/index.js";
 import chalk from "chalk";
 
@@ -47,8 +48,6 @@ program
       console.log(powershell.getSetupInstructions());
       return;
     }
-
-    printHeader();
 
     // Load and validate config
     const configOverrides: Parameters<typeof loadConfig>[0] = {};
@@ -92,16 +91,17 @@ program
         console.log("  thefuckai --setup");
         process.exit(1);
       }
-    } else {
-      printCommand("Analyzing", command);
-    }
+    } 
+    // Removed "Analyzing: command" print
 
     if (output && config.verbose) {
       console.log("\nOutput:");
       console.log(output);
     }
 
-    console.log(chalk.gray("\n🧠 Thinking...\n"));
+    console.log(); // Spacing
+    const animation = createHackingAnimation("Analyzing what happened...");
+    animation.start();
     
     // Detect environment context
     const envContext = detectEnvironment();
@@ -110,12 +110,21 @@ program
     }
     
     try {
+      let isFirstChunk = true;
       const result = await analyzeCommandStream(command, output, config, envContext, {
         onExplanationUpdate: (text) => {
+          if (isFirstChunk) {
+            animation.stop();
+            isFirstChunk = false;
+          }
           // Stream using the polished UI function
           printStreamingExplanation(text);
         },
       });
+      
+      if (isFirstChunk) {
+        animation.stop();
+      }
       
       finalizeStreaming();
       console.log();
