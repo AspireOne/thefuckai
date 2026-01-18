@@ -1,6 +1,6 @@
 {
   "name": "thefuckai",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI-powered terminal assistant that explains errors and suggests fixes",
   "type": "module",
   "main": "dist/index.js",
