@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsup",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "cli",
@@ -18,8 +19,24 @@
     "terminal",
     "assistant"
   ],
-  "author": "",
+  "author": "AspireOne",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AspireOne/thefuckai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AspireOne/thefuckai/issues"
+  },
+  "homepage": "https://github.com/AspireOne/thefuckai#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
     "@types/node": "^22.0.0",
