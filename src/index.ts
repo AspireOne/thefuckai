@@ -22,7 +22,7 @@ import chalk from "chalk";
 const program = new Command();
 
 program
-  .name("thefuckai")
+  .name("tf-ai")
   .description("AI-powered terminal assistant that explains errors and suggests fixes")
   .version("1.0.0");
 
@@ -86,9 +86,9 @@ program
       } else {
         printWarning("No command provided and couldn't get last command from history.");
         console.log("\nUsage:");
-        console.log("  thefuckai --command 'git pussh' --output 'error message'");
+        console.log("  tf-ai --command 'git pussh' --output 'error message'");
         console.log("\nOr set up the shell integration:");
-        console.log("  thefuckai --setup");
+        console.log("  tf-ai --setup");
         process.exit(1);
       }
     } 

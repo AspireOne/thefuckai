@@ -14,7 +14,7 @@ const ICONS = {
 
 export function printHeader(): void {
   // Clean header using theme
-  console.log(theme.header(`\n${ICONS.robot} thefuckai\n`));
+  console.log(theme.header(`\n${ICONS.robot} tf-ai\n`));
 }
 
 export function printExplanation(result: AnalysisResult): void {

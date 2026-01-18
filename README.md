@@ -1,8 +1,8 @@
-# thefuckai 🤖
+# tf-ai 🤖
 
 > *The AI-powered successor to `thefuck` — explains errors, fixes commands, and troubleshoots your terminal.*
 
-**thefuckai** is a smart CLI tool that uses Large Language Models (LLMs) to analyze your terminal commands and their output. It understands your environment (Shell, OS, Project Type) to provide tailored explanations and fixes.
+**tf-ai** is a smart CLI tool that uses Large Language Models (LLMs) to analyze your terminal commands and their output. It understands your environment (Shell, OS, Project Type) to provide tailored explanations and fixes.
 
 Run a command, fail, type `fuck`, and let AI handle the rest.
 
@@ -18,10 +18,10 @@ Run a command, fail, type `fuck`, and let AI handle the rest.
 
 ```bash
 # Install globally via npm
-npm install -g thefuckai
+npm install -g tf-ai
 
 # Or run directly
-npx thefuckai --help
+npx tf-ai --help
 ```
 
 ## ⚙️ Configuration
@@ -36,7 +36,7 @@ npx thefuckai --help
 
 2. **Advanced Config** (Optional)
    
-   Create `~/.thefuckai/config.json`:
+   Create `~/.tf-ai/config.json`:
    ```json
    {
      "model": "claude-3-5-sonnet-latest",
@@ -52,7 +52,7 @@ npx thefuckai --help
 To use the `fuck` alias, run the setup command for your shell:
 
 ```bash
-thefuckai --setup
+tf-ai --setup
 ```
 Follow the instructions to add the function to your shell profile (PowerShell `$PROFILE`, `.bashrc`, etc).
 
@@ -67,7 +67,7 @@ git: 'pussh' is not a git command.
 PS> fuck
 
 # 3. Get help instantly
-🤖 thefuckai
+🤖 tf-ai
    It looks like you made a typo. 'pussh' is not a valid git command.
 
 💡 Suggested command:
@@ -82,10 +82,10 @@ You can also use it manually to analyze specific errors:
 
 ```bash
 # Analyze a specific failure
-thefuckai --command "npm install" --output "EBADENGINE Unsupported engine"
+tf-ai --command "npm install" --output "EBADENGINE Unsupported engine"
 
 # Just get an explanation without fixes
-thefuckai --command "ls -la" --explain
+tf-ai --command "ls -la" --explain
 ```
 
 ## 🛠️ Development

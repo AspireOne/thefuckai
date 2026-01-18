@@ -23,7 +23,7 @@ interface ConfigFile {
   verbose?: boolean;
 }
 
-const CONFIG_DIR = join(homedir(), ".thefuckai");
+const CONFIG_DIR = join(homedir(), ".tf-ai");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
 function loadConfigFile(): ConfigFile {
@@ -73,7 +73,7 @@ function getApiKey(provider: "anthropic" | "openai" | "google", configKey?: stri
   }
   
   // Also check generic key
-  return process.env["THEFUCKAI_API_KEY"] ?? "";
+  return process.env["TF_AI_API_KEY"] ?? "";
 }
 
 export function loadConfig(overrides?: Partial<Config>): Config {
@@ -82,7 +82,7 @@ export function loadConfig(overrides?: Partial<Config>): Config {
   // Determine model (priority: override > env > file > default)
   const model =
     overrides?.model ??
-    process.env["THEFUCKAI_MODEL"] ??
+    process.env["TF_AI_MODEL"] ??
     file.model ??
     "claude-sonnet-4-5-20250929";
   

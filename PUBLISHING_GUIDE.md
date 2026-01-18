@@ -1,4 +1,4 @@
-# How to Publish `thefuckai`
+# How to Publish `tf-ai`
 
 This guide explains how to publish your CLI tool to the npm registry.
 
@@ -48,4 +48,4 @@ npm publish
 
 ## Troubleshooting
 - **OTP**: If you have 2FA enabled (recommended), `npm publish` will prompt you for a one-time password.
-- **Access**: If the name `thefuckai` is taken by someone else, the publish will fail. You will need to choose a different name in `package.json`.
+- **Access**: If the name `tf-ai` is taken by someone else, the publish will fail. You will need to choose a different name in `package.json`.

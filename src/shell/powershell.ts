@@ -6,7 +6,7 @@ const execAsync = promisify(exec);
 
 export class PowerShellAdapter implements ShellAdapter {
   async getLastCommand(): Promise<CommandContext | null> {
-    // This is called when the user runs thefuckai without explicit --command
+    // This is called when the user runs tf-ai without explicit --command
     // We try to get the last command from PowerShell history
     try {
       const { stdout } = await execAsync(
@@ -67,8 +67,8 @@ function fuck {
         $_.Exception.Message 
     }
     
-    # Call thefuckai with captured command and output
-    thefuckai --command $lastCmd --output $output
+    # Call tf-ai with captured command and output
+    tf-ai --command $lastCmd --output $output
 }
 
 Then reload your profile:
