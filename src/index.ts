@@ -151,6 +151,7 @@ program
         }
       }
     } catch (error) {
+      animation.stop(); // Stop animation on error
       finalizeStreaming(); // Reset streaming state
       
       const err = error as Error;
