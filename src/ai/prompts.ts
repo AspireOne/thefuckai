@@ -1,3 +1,5 @@
+import type { EnvironmentContext } from "../shell/context.js";
+
 export const SYSTEM_PROMPT = `You are an expert terminal assistant that helps developers understand command output and troubleshoot issues.
 
 Given a command and its output, analyze the situation and provide helpful insight. The output could be:
@@ -17,13 +19,24 @@ Guidelines:
 - Be concise but thorough (if the problem is complex/deep, you have more leeway)
 - If you suggest a command, explain why / what it will do
 - If you're unsure or lacking enough context, say so
-- Consider the context (the user is typically on PowerShell/Windows)`;
+- Tailor suggestions to the user's shell and OS`;
 
-export function formatUserMessage(command: string, output: string): string {
+export function formatUserMessage(
+  command: string, 
+  output: string,
+  context: EnvironmentContext
+): string {
+  const projectInfo = context.projectType ? `\n- Project Type: ${context.projectType}` : '';
+  
   return `Command: ${command}
 
 Output:
 ${output || "(no output)"}
+
+Environment:
+- Shell: ${context.shell}
+- OS: ${context.os}
+- Working Directory: ${context.cwd}${projectInfo}
 
 Analyze this command and its output. Explain what happened and suggest a follow-up action if appropriate.`;
 }

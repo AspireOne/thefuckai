@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import { loadConfig, validateConfig, CONFIG_FILE } from "./config.js";
 import { analyzeCommandStream } from "./ai/index.js";
-import { powershell } from "./shell/index.js";
+import { powershell, detectEnvironment } from "./shell/index.js";
 import {
   printHeader,
   printSuggestion,
@@ -103,8 +103,14 @@ program
 
     console.log(chalk.gray("\n🧠 Thinking...\n"));
     
+    // Detect environment context
+    const envContext = detectEnvironment();
+    if (config.verbose) {
+      printVerbose(`Environment: ${JSON.stringify(envContext, null, 2)}`, true);
+    }
+    
     try {
-      const result = await analyzeCommandStream(command, output, config, {
+      const result = await analyzeCommandStream(command, output, config, envContext, {
         onExplanationUpdate: (text) => {
           // Stream using the polished UI function
           printStreamingExplanation(text);

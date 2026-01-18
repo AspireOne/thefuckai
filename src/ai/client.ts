@@ -34,6 +34,8 @@ function getModel(config: Config) {
   }
 }
 
+import type { EnvironmentContext } from "../shell/context.js";
+
 export interface StreamCallbacks {
   onExplanationUpdate?: (text: string) => void;
   onComplete?: (result: AnalysisResult) => void;
@@ -48,6 +50,7 @@ export async function analyzeCommandStream(
   command: string,
   output: string,
   config: Config,
+  environment: EnvironmentContext,
   callbacks: StreamCallbacks = {}
 ): Promise<AnalysisResult> {
   const model = getModel(config);
@@ -55,7 +58,7 @@ export async function analyzeCommandStream(
   const { partialOutputStream } = streamText({
     model,
     system: SYSTEM_PROMPT,
-    prompt: formatUserMessage(command, output),
+    prompt: formatUserMessage(command, output, environment),
     output: Output.object({ schema: analysisResponseSchema }),
   });
 
@@ -99,7 +102,8 @@ export async function analyzeCommandStream(
 export async function analyzeCommand(
   command: string,
   output: string,
-  config: Config
+  config: Config,
+  environment: EnvironmentContext
 ): Promise<AnalysisResult> {
-  return analyzeCommandStream(command, output, config);
+  return analyzeCommandStream(command, output, config, environment);
 }
