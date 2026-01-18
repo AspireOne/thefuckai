@@ -10,6 +10,7 @@ import {
   printWarning,
   printCommand,
   printVerbose,
+  printStreamingExplanation,
   finalizeStreaming,
   confirmCommand,
   editCommand,
@@ -105,8 +106,8 @@ program
     try {
       const result = await analyzeCommandStream(command, output, config, {
         onExplanationUpdate: (text) => {
-          // Stream the explanation as it comes in
-          process.stdout.write(`\r${chalk.white(text)}`);
+          // Stream using the polished UI function
+          printStreamingExplanation(text);
         },
       });
       

@@ -80,11 +80,11 @@ export function loadConfig(overrides?: Partial<Config>): Config {
   const file = loadConfigFile();
   
   // Determine model (priority: override > env > file > default)
-  const model = 
+  const model =
     overrides?.model ??
     process.env["THEFUCKAI_MODEL"] ??
     file.model ??
-    "claude-sonnet-4-20250514";
+    "claude-sonnet-4-5-20250929";
   
   // Detect provider from model string
   const provider = 

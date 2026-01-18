@@ -22,19 +22,29 @@ export function printExplanation(result: AnalysisResult): void {
   }
 }
 
+let lastPrintedLength = 0;
+
 /**
- * For streaming: clears current line and prints updated explanation
+ * For streaming: prints only the new part of the explanation
  */
-export function printStreamingExplanation(text: string): void {
-  // Clear current output and reprint (for terminal streaming effect)
-  process.stdout.write(`\r${chalk.white(text)}`);
+export function printStreamingExplanation(fullText: string): void {
+  if (!fullText) return;
+  
+  // Calculate the new chunk to print
+  const newText = fullText.slice(lastPrintedLength);
+  
+  if (newText) {
+    process.stdout.write(chalk.white(newText));
+    lastPrintedLength = fullText.length;
+  }
 }
 
 /**
- * Finalize streaming output with newline
+ * Finalize streaming output with newline and reset state
  */
 export function finalizeStreaming(): void {
   console.log(); // New line after streaming completes
+  lastPrintedLength = 0; // Reset for next run
 }
 
 export function printSuggestion(suggestion: CommandSuggestion): void {
