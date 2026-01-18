@@ -106,3 +106,35 @@ const sandboxAgent = new ToolLoopAgent({
   },
 });
 ```
+
+## About Gateway
+
+Vercel’s AI SDK can be used purely as an SDK while sending requests **directly** to OpenAI using your own OpenAI API key, with no requirement to use the Vercel AI Gateway.
+
+## Direct OpenAI (no Gateway)
+The AI SDK’s OpenAI provider (`@ai-sdk/openai`) defaults to the OpenAI API base URL `https://api.openai.com/v1`, so it talks to OpenAI servers directly unless you change it.
+It also defaults to reading your key from `OPENAI_API_KEY` (or you can pass `apiKey` explicitly).
+
+```ts
+import { generateText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const { text } = await generateText({
+  model: openai('gpt-4.1-mini'),
+  prompt: 'Hello!',
+});
+```
+
+## Avoid the “Gateway by default” behavior
+If you pass a *plain string* as the model (e.g. `model: 'openai/gpt-5.2'`), the AI SDK treats the Vercel AI Gateway as the default provider for that style of call.
+To avoid the Gateway, either (a) use a provider instance like `openai('...')` (shown above) or (b) set the default provider globally to `openai`.
+
+```ts
+import { openai } from '@ai-sdk/openai';
+
+globalThis.AI_SDK_DEFAULT_PROVIDER = openai;
+```
+
+## When you *are* using Vercel AI Gateway
+Vercel positions the AI Gateway as a separate product built on top of the AI SDK (i.e., they’re coupled, but not required together).
+If you do want the Gateway, you typically point an OpenAI-compatible client (including the AI SDK via `@ai-sdk/openai-compatible`) at Vercel’s Gateway base URL.

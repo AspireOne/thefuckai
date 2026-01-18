@@ -136,7 +136,7 @@ program
         }
       }
     } catch (error) {
-      console.log();
+      finalizeStreaming(); // Reset streaming state
       
       const err = error as Error;
       printError(`Failed to analyze command: ${err.message}`);
