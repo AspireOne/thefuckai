@@ -29,10 +29,10 @@ let lastPrintedLength = 0;
  */
 export function printStreamingExplanation(fullText: string): void {
   if (!fullText) return;
-  
+
   // Calculate the new chunk to print
   const newText = fullText.slice(lastPrintedLength);
-  
+
   if (newText) {
     process.stdout.write(chalk.white(newText));
     lastPrintedLength = fullText.length;
@@ -54,15 +54,12 @@ export function printSuggestion(suggestion: CommandSuggestion): void {
     low: chalk.red,
   }[suggestion.confidence];
 
-  console.log(chalk.cyan(`${ICONS.lightbulb} Suggested fix:`));
+  console.log(chalk.cyan(`${ICONS.lightbulb} Suggested command:`));
   console.log();
   console.log(chalk.bgGray.white.bold(`  ${ICONS.command} ${suggestion.command}  `));
   console.log();
-  
-  console.log(
-    chalk.gray("Confidence: ") + 
-    confidenceColor(suggestion.confidence)
-  );
+
+  console.log(chalk.gray("Confidence: ") + confidenceColor(suggestion.confidence));
   console.log();
 }
 

@@ -9,15 +9,15 @@ export const analysisResponseSchema = z.object({
     ),
   suggestedCommand: z
     .string()
-    .optional()
+    .nullable()
     .describe(
-      "A follow-up command the user could run, if applicable. Could be a fix, a next step, or a diagnostic command. Omit/pass null if no command is suggested",
+      "A follow-up command the user could run, if applicable. Could be a fix, a next step, or a diagnostic command. Pass null if no command is suggested",
     ),
   confidence: z
     .enum(["high", "medium", "low"])
-    .optional()
+    .nullable()
     .describe(
-      "How confident you are that the suggested command will help. Omit/pass null if no command is suggested.",
+      "How confident you are that the suggested command will help. Pass null if no command is suggested.",
     ),
 });
 
