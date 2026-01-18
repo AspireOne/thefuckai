@@ -1,19 +1,27 @@
 import chalk from "chalk";
 
-// Warm Pastel Palette
+/**
+ * Warm Pastel Palette
+ * Central source of truth for all application colors.
+ */
 export const COLORS = {
-  lavender: "#B5B9FF", // Primary
-  peach: "#FFB0B0",    // Secondary/Accent
-  sage: "#A8D8B9",     // Success
-  coral: "#FF9999",    // Error
-  sand: "#E8D0B0",     // Warning
-  taupe: "#C0B0A0",    // Muted/Explanation
-  charcoal: "#404040", // Dark text if needed
-  offWhite: "#F0F0F0", // Light text
+  lavender: "#B5B9FF", // Primary brand color
+  peach: "#FFB0B0",    // Secondary/Accent color
+  sage: "#A8D8B9",     // Success/Positive action
+  coral: "#FF9999",    // Error/Destructive action
+  sand: "#E8D0B0",     // Warning/Caution
+  taupe: "#C0B0A0",    // Muted text/Explanations
+  charcoal: "#404040", // Dark text (reserved)
+  offWhite: "#F0F0F0", // Light text (default)
 };
 
+/**
+ * Semantic Theme Definitions
+ * Maps specific UI elements to their corresponding styles using the palette.
+ * Use these exports in components instead of raw colors.
+ */
 export const theme = {
-  // Base roles
+  // --- Global Roles ---
   primary: chalk.hex(COLORS.lavender),
   secondary: chalk.hex(COLORS.peach),
   success: chalk.hex(COLORS.sage),
@@ -22,17 +30,24 @@ export const theme = {
   muted: chalk.hex(COLORS.taupe),
   text: chalk.white,
   
-  // Specific usages
-  header: chalk.hex(COLORS.lavender).bold,
-  command: chalk.hex(COLORS.lavender).bold,
-  explanation: chalk.hex(COLORS.taupe),
-  suggestionLabel: chalk.hex(COLORS.peach).bold,
-  confidenceHigh: chalk.hex(COLORS.sage),
-  confidenceMedium: chalk.hex(COLORS.sand),
-  confidenceLow: chalk.hex(COLORS.coral),
+  // --- Component Specifics ---
   
-  // Animation
+  // The big "thefuckai" banner (unused if we go minimal)
+  header: chalk.hex(COLORS.lavender).bold,
+  
+  // The suggested command to run (e.g. `git push`)
+  command: chalk.hex(COLORS.lavender).bold,
+  
+  // The AI's explanation text
+  explanation: chalk.hex(COLORS.taupe),
+  
+  // "Suggested fix:" label
+  suggestionLabel: chalk.hex(COLORS.peach).bold,
+  
+  // --- Animation Colors ---
+  // Glitch characters in the loading animation
   glitch1: chalk.hex(COLORS.peach),
   glitch2: chalk.hex(COLORS.lavender),
+  // Base text color for "Analyzing..."
   glitchBase: chalk.hex(COLORS.taupe),
 };

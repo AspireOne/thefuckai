@@ -9,7 +9,6 @@ import { analysisResponseSchema, type AnalysisResponse } from "./schema.js";
 export interface CommandSuggestion {
   command: string;
   explanation: string;
-  confidence: "high" | "medium" | "low";
 }
 
 export interface AnalysisResult {
@@ -87,7 +86,6 @@ export async function analyzeCommandStream(
       ? {
           command: finalResponse.suggestedCommand,
           explanation: "", // Explanation is in the main field
-          confidence: finalResponse.confidence ?? "medium",
         }
       : undefined,
   };

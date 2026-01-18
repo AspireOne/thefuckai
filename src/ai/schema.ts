@@ -13,12 +13,6 @@ export const analysisResponseSchema = z.object({
     .describe(
       "A follow-up command the user could run, if applicable. Could be a fix, a next step, or a diagnostic command. Pass null if no command is suggested",
     ),
-  confidence: z
-    .enum(["high", "medium", "low"])
-    .nullable()
-    .describe(
-      "How confident you are that the suggested command will help. Pass null if no command is suggested.",
-    ),
 });
 
 export type AnalysisResponse = z.infer<typeof analysisResponseSchema>;

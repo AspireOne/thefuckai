@@ -51,22 +51,10 @@ export function finalizeStreaming(): void {
 }
 
 export function printSuggestion(suggestion: CommandSuggestion): void {
-  const confidenceColor = {
-    high: theme.confidenceHigh,
-    medium: theme.confidenceMedium,
-    low: theme.confidenceLow,
-  }[suggestion.confidence];
-
   console.log(theme.suggestionLabel(`${ICONS.lightbulb} Suggested fix:`));
   console.log();
   // Using theme.command color
   console.log(theme.command(`  ${ICONS.command} ${suggestion.command}  `));
-  console.log();
-  
-  console.log(
-    theme.muted("Confidence: ") + 
-    confidenceColor(suggestion.confidence)
-  );
   console.log();
 }
 
