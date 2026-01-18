@@ -1,103 +1,91 @@
 # thefuckai 🤖
 
-> *AI-powered terminal assistant that explains command output and helps you troubleshoot*
+> *The AI-powered successor to `thefuck` — explains errors, fixes commands, and troubleshoots your terminal.*
 
-**thefuckai** uses Large Language Models to analyze your terminal commands and their output. Whether you hit an error, got unexpected behavior, or just want to understand what happened — it explains what's going on and suggests what to do next.
+**thefuckai** is a smart CLI tool that uses Large Language Models (LLMs) to analyze your terminal commands and their output. It understands your environment (Shell, OS, Project Type) to provide tailored explanations and fixes.
 
-## ✨ What It Does
+Run a command, fail, type `fuck`, and let AI handle the rest.
 
-- **🔍 Explains Output** — Interprets error messages, warnings, and confusing output in plain English
-- **🧠 Troubleshoots Issues** — Diagnoses build failures, permission errors, network issues, and more
-- **💡 Suggests Next Steps** — Offers follow-up commands when there's a clear action to take
-- **⚡ Streams in Real-Time** — See the AI's response as it types, no waiting for the full answer
-- **🔌 Multi-Provider** — Works with Claude, GPT-4, Gemini, and any [Vercel AI SDK](https://sdk.vercel.ai) provider
+## ✨ Features
+
+- **🧠 Context-Aware Analysis**: Understanding not just *what* failed, but *where* (PowerShell vs Bash, Node.js vs Python project, etc).
+- **📝 Plain English Explanations**: Deciphers cryptic error codes and log spew into clear, actionable insights.
+- **⚡ Real-Time Streaming**: Watch the explanation appear instantly — no waiting for the full response.
+- **🛠️ Smart Suggestions**: Offers corrected commands that match your specific shell syntax.
+- **🔌 Provider Agnostic**: Works with Anthropic (Claude), OpenAI (GPT-4), Google (Gemini), or any [Vercel AI SDK](https://sdk.vercel.ai) compatible provider.
 
 ## 📦 Installation
 
 ```bash
-# Install globally
+# Install globally via npm
 npm install -g thefuckai
 
-# Or use directly with npx
+# Or run directly
 npx thefuckai --help
 ```
 
 ## ⚙️ Configuration
 
-Set your API key:
+1. **Set your API Key** (Required)
 
-```bash
-# Anthropic (recommended)
-export ANTHROPIC_API_KEY="sk-ant-..."
+   ```bash
+   export ANTHROPIC_API_KEY="sk-ant-..."
+   # OR
+   export OPENAI_API_KEY="sk-..."
+   ```
 
-# Or OpenAI
-export OPENAI_API_KEY="sk-..."
-```
-
-Or create `~/.thefuckai/config.json`:
-
-```json
-{
-  "model": "claude-sonnet-4-5-20250929",
-  "apiKey": "sk-ant-..."
-}
-```
+2. **Advanced Config** (Optional)
+   
+   Create `~/.thefuckai/config.json`:
+   ```json
+   {
+     "model": "claude-3-5-sonnet-latest",
+     "confirmBeforeRun": true,
+     "verbose": false
+   }
+   ```
 
 ## 🚀 Usage
 
-### Direct Usage
+### 1. Setup Shell Integration (Recommended)
+
+To use the `fuck` alias, run the setup command for your shell:
 
 ```bash
-# Analyze a command and its output
-thefuckai --command "npm run build" --output "Error: Cannot find module 'react'"
-
-# Just get an explanation (no command suggestion)
-thefuckai --command "git status" --output "..." --explain
-
-# Auto-run the suggested command
-thefuckai --command "..." --output "..." --yes
+thefuckai --setup
 ```
+Follow the instructions to add the function to your shell profile (PowerShell `$PROFILE`, `.bashrc`, etc).
 
-### Shell Integration (Recommended)
-
-Add this to your PowerShell profile (`$PROFILE`):
+### 2. The "Fuck" Workflow
 
 ```powershell
-function fuck {
-    $lastCmd = (Get-History -Count 1).CommandLine
-    if (-not $lastCmd) {
-        Write-Host "No command in history" -ForegroundColor Red
-        return
-    }
-    
-    $output = try { 
-        Invoke-Expression $lastCmd 2>&1 | Out-String 
-    } catch { 
-        $_.Exception.Message 
-    }
-    
-    thefuckai --command $lastCmd --output $output
-}
-```
-
-Now just type `fuck` after any command to get help:
-
-```
+# 1. Mess up a command
 PS> git pussh origin main
-git: 'pussh' is not a git command. See 'git --help'.
+git: 'pussh' is not a git command.
 
+# 2. Summon the AI
 PS> fuck
+
+# 3. Get help instantly
 🤖 thefuckai
+   It looks like you made a typo. 'pussh' is not a valid git command.
 
-You have a typo: 'pussh' should be 'push'. Git commands are case-sensitive 
-and must be spelled exactly...
+💡 Suggested command:
+   ➜ git push origin main
 
-💡 Suggested fix:
-  ➜ git push origin main
+   [Enter] Run  [e] Edit  [Esc] Cancel
+```
 
-Confidence: high
+### 3. Direct Usage
 
-Press: [Enter] Run | [e] Edit | [Esc] Cancel
+You can also use it manually to analyze specific errors:
+
+```bash
+# Analyze a specific failure
+thefuckai --command "npm install" --output "EBADENGINE Unsupported engine"
+
+# Just get an explanation without fixes
+thefuckai --command "ls -la" --explain
 ```
 
 ## 🛠️ Development
@@ -106,7 +94,9 @@ Press: [Enter] Run | [e] Edit | [Esc] Cancel
 git clone https://github.com/yourusername/thefuckai.git
 cd thefuckai
 pnpm install
-pnpm dev -- --help
+
+# Run locally
+pnpm dev -- --command "echo test" --output "error"
 ```
 
 ## 📄 License
