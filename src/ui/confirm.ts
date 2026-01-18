@@ -13,10 +13,20 @@ export interface ConfirmResult {
 
 export async function confirmCommand(command: string): Promise<ConfirmResult> {
   return new Promise((resolve) => {
-    console.log(theme.secondary("Press:"));
-    console.log(theme.muted("  [Enter] Run command"));
-    console.log(theme.muted("  [e]     Edit command"));
-    console.log(theme.muted("  [Esc/q] Cancel"));
+    // "Press:" is now muted (Warm Gray), not Red/Pink
+    console.log(theme.muted("Press:"));
+    
+    // Keys highlighted in Secondary (Maple) / Accent (Coral)
+    // Using formatted strings to mix colors
+    console.log(
+      theme.secondary("  [Enter]") + theme.muted(" Run command")
+    );
+    console.log(
+      theme.secondary("  [e]    ") + theme.muted(" Edit command")
+    );
+    console.log(
+      theme.secondary("  [Esc/q]") + theme.muted(" Cancel")
+    );
     console.log();
 
     // Set up raw mode to capture single keypresses
