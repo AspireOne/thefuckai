@@ -31,10 +31,10 @@ let lastPrintedLength = 0;
  */
 export function printStreamingExplanation(fullText: string): void {
   if (!fullText) return;
-  
+
   // Calculate the new chunk to print
   const newText = fullText.slice(lastPrintedLength);
-  
+
   if (newText) {
     // Use theme explanation color
     process.stdout.write(theme.explanation(newText));
@@ -51,7 +51,7 @@ export function finalizeStreaming(): void {
 }
 
 export function printSuggestion(suggestion: CommandSuggestion): void {
-  console.log(theme.suggestionLabel(`${ICONS.lightbulb} Suggested fix:`));
+  console.log(theme.suggestionLabel(`${ICONS.lightbulb} Suggested command:`));
   console.log();
   // Using theme.command color
   console.log(theme.command(`  ${ICONS.command} ${suggestion.command}  `));
