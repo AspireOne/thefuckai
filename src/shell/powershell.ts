@@ -73,8 +73,8 @@ export class PowerShellAdapter implements ShellAdapter {
 Add this to your PowerShell profile ($PROFILE):
 
 function fuck {
-    # Get last 4 commands from history (for context)
-    $historyItems = Get-History -Count 4
+    # Get last 3 commands from history (for context)
+    $historyItems = Get-History -Count 3
     $historyCommands = @()
     foreach ($item in $historyItems) {
         $historyCommands += $item.CommandLine
@@ -96,13 +96,26 @@ function fuck {
             hasOutput = $false
         }
     }
-    $historyArg = ($historyJson | ConvertTo-Json -Compress) -replace '"', '\\"'
+    $historyArg = ($historyJson | ConvertTo-Json -Compress) -replace '"', '\\\\"'
     
-    # Re-execute last command to capture output
-    $output = try { 
-        Invoke-Expression $lastCmd 2>&1 | Out-String 
-    } catch { 
-        $_.Exception.Message 
+    # Ask for confirmation before re-executing
+    Write-Host "Last command: " -NoNewline
+    Write-Host $lastCmd -ForegroundColor Cyan
+    $confirm = Read-Host "Re-run to capture output? (y/n/s to skip)"
+    
+    $output = ""
+    if ($confirm -eq "y" -or $confirm -eq "Y") {
+        # Re-execute last command to capture output
+        $output = try { 
+            Invoke-Expression $lastCmd 2>&1 | Out-String 
+        } catch { 
+            $_.Exception.Message 
+        }
+    } elseif ($confirm -eq "s" -or $confirm -eq "S" -or $confirm -eq "n" -or $confirm -eq "N") {
+        $output = "(output not captured - user skipped re-execution)"
+    } else {
+        Write-Host "Cancelled" -ForegroundColor Yellow
+        return
     }
     
     # Call tf-ai with captured command, output, and history

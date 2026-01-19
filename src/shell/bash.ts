@@ -61,10 +61,10 @@ export class BashAdapter implements ShellAdapter {
 # Add this to your .bashrc or .zshrc:
 
 function fuck() {
-    # Get last 4 commands from history (for context)
-    # fc -ln -4 gets the last 4 commands, sed removes leading whitespace
+    # Get last 3 commands from history (for context)
+    # fc -ln -3 gets the last 3 commands, sed removes leading whitespace
     local history_cmds
-    history_cmds=$(fc -ln -4 2>/dev/null | sed 's/^[[:space:]]*//')
+    history_cmds=$(fc -ln -3 2>/dev/null | sed 's/^[[:space:]]*//')
     
     if [ -z "$history_cmds" ]; then
         echo "No command in history"
@@ -102,9 +102,26 @@ function fuck() {
     done
     history_json+="]"
     
-    # Re-execute last command to capture output (stdout + stderr)
-    local TF_OUTPUT
-    TF_OUTPUT=$($last_cmd 2>&1)
+    # Ask for confirmation before re-executing
+    echo -n "Last command: "
+    echo -e "\\033[36m$last_cmd\\033[0m"
+    echo -n "Re-run to capture output? (y/n/s to skip): "
+    read -r confirm
+    
+    local TF_OUTPUT=""
+    case "$confirm" in
+        y|Y)
+            # Re-execute last command to capture output (stdout + stderr)
+            TF_OUTPUT=$($last_cmd 2>&1)
+            ;;
+        s|S|n|N)
+            TF_OUTPUT="(output not captured - user skipped re-execution)"
+            ;;
+        *)
+            echo "Cancelled"
+            return
+            ;;
+    esac
     
     # Call tf-ai with captured command, output, and history
     if [ "$cmd_count" -gt 1 ]; then
