@@ -1,6 +1,6 @@
 {
   "name": "tf-ai",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AI-powered terminal assistant that explains errors and suggests fixes",
   "type": "module",
   "main": "dist/index.js",
