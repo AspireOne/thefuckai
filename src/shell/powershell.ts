@@ -74,8 +74,7 @@ Add this to your PowerShell profile ($PROFILE):
 
 function fuck {
     param(
-        [Alias("r")][switch]$Rerun,
-        [Alias("s")][switch]$Skip
+        [Alias("r")][switch]$Rerun
     )
     
     # Get last 3 commands from history (for context)
@@ -105,39 +104,20 @@ function fuck {
     
     $output = ""
     
-    # Handle flags: -r/--Rerun to auto-rerun, -s/--Skip to skip
+    Write-Host "Last command: " -NoNewline
+    Write-Host $lastCmd -ForegroundColor Cyan
+    
+    # Use -r/--Rerun flag to re-run the command for output capture
     if ($Rerun) {
-        Write-Host "Last command: " -NoNewline
-        Write-Host $lastCmd -ForegroundColor Cyan
         Write-Host "Re-running to capture output..." -ForegroundColor Gray
         $output = try { 
             Invoke-Expression $lastCmd 2>&1 | Out-String 
         } catch { 
             $_.Exception.Message 
         }
-    } elseif ($Skip) {
-        Write-Host "Last command: " -NoNewline
-        Write-Host $lastCmd -ForegroundColor Cyan
-        Write-Host "Skipping re-execution (no output capture)" -ForegroundColor Gray
-        $output = "(output not captured - skipped via flag)"
     } else {
-        # Interactive mode: ask for confirmation
-        Write-Host "Last command: " -NoNewline
-        Write-Host $lastCmd -ForegroundColor Cyan
-        $confirm = Read-Host "Re-run to capture output? (y/n)"
-        
-        if ($confirm -eq "y" -or $confirm -eq "Y") {
-            $output = try { 
-                Invoke-Expression $lastCmd 2>&1 | Out-String 
-            } catch { 
-                $_.Exception.Message 
-            }
-        } elseif ($confirm -eq "n" -or $confirm -eq "N") {
-            $output = "(output not captured - user skipped re-execution)"
-        } else {
-            Write-Host "Cancelled" -ForegroundColor Yellow
-            return
-        }
+        # Default: skip re-execution (no output capture)
+        $output = "(output not captured)"
     }
     
     # Call tf-ai with captured command, output, and history
@@ -149,11 +129,9 @@ function fuck {
 }
 
 # Usage:
-#   fuck           - Interactive mode (prompts for confirmation)
-#   fuck -r        - Auto re-run last command to capture output
-#   fuck -Rerun    - Same as -r
-#   fuck -s        - Skip re-execution, analyze without output
-#   fuck -Skip     - Same as -s
+#   fuck        - Analyze last command (without re-running it)
+#   fuck -r     - Re-run last command to capture output, then analyze
+#   fuck -Rerun - Same as -r
 
 Then reload your profile:
 . $PROFILE

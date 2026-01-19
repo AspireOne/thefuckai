@@ -78,6 +78,15 @@ PS> fuck
    [Enter] Run  [e] Edit  [Esc] Cancel
 ```
 
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `fuck` | Analyze the last command (default - doesn't re-run it) |
+| `fuck -r` | Re-run the last command to capture its output, then analyze |
+
+> **Tip**: Use `fuck -r` when the error output is important for diagnosis. The default mode is faster and works well for typos and common mistakes.
+
 ### 3. Direct Usage
 
 You can also use it manually to analyze specific errors:

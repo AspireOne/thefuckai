@@ -62,7 +62,6 @@ export class BashAdapter implements ShellAdapter {
 
 function fuck() {
     local rerun=false
-    local skip=false
     
     # Parse arguments
     while [[ $# -gt 0 ]]; do
@@ -71,13 +70,9 @@ function fuck() {
                 rerun=true
                 shift
                 ;;
-            -s|--skip)
-                skip=true
-                shift
-                ;;
             *)
                 echo "Unknown option: $1"
-                echo "Usage: fuck [-r|--rerun] [-s|--skip]"
+                echo "Usage: fuck [-r|--rerun]"
                 return 1
                 ;;
         esac
@@ -126,36 +121,16 @@ function fuck() {
     
     local TF_OUTPUT=""
     
-    # Handle flags: -r/--rerun to auto-rerun, -s/--skip to skip
+    echo -n "Last command: "
+    echo -e "\\033[36m$last_cmd\\033[0m"
+    
+    # Use -r/--rerun flag to re-run the command for output capture
     if [ "$rerun" = true ]; then
-        echo -n "Last command: "
-        echo -e "\\033[36m$last_cmd\\033[0m"
         echo -e "\\033[90mRe-running to capture output...\\033[0m"
         TF_OUTPUT=$($last_cmd 2>&1)
-    elif [ "$skip" = true ]; then
-        echo -n "Last command: "
-        echo -e "\\033[36m$last_cmd\\033[0m"
-        echo -e "\\033[90mSkipping re-execution (no output capture)\\033[0m"
-        TF_OUTPUT="(output not captured - skipped via flag)"
     else
-        # Interactive mode: ask for confirmation
-        echo -n "Last command: "
-        echo -e "\\033[36m$last_cmd\\033[0m"
-        echo -n "Re-run to capture output? (y/n): "
-        read -r confirm
-        
-        case "$confirm" in
-            y|Y)
-                TF_OUTPUT=$($last_cmd 2>&1)
-                ;;
-            n|N)
-                TF_OUTPUT="(output not captured - user skipped re-execution)"
-                ;;
-            *)
-                echo "Cancelled"
-                return
-                ;;
-        esac
+        # Default: skip re-execution (no output capture)
+        TF_OUTPUT="(output not captured)"
     fi
     
     # Call tf-ai with captured command, output, and history
@@ -167,11 +142,9 @@ function fuck() {
 }
 
 # Usage:
-#   fuck           - Interactive mode (prompts for confirmation)
-#   fuck -r        - Auto re-run last command to capture output
-#   fuck --rerun   - Same as -r
-#   fuck -s        - Skip re-execution, analyze without output
-#   fuck --skip    - Same as -s
+#   fuck        - Analyze last command (without re-running it)
+#   fuck -r     - Re-run last command to capture output, then analyze
+#   fuck --rerun - Same as -r
 `.trim();
   }
 }
