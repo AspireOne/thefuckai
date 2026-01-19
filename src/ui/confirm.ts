@@ -13,21 +13,12 @@ export interface ConfirmResult {
 
 export async function confirmCommand(command: string): Promise<ConfirmResult> {
   return new Promise((resolve) => {
-    // "Press:" is now muted (Warm Gray), not Red/Pink
-    console.log(theme.muted("Press:"));
-    
-    // Keys highlighted in Secondary (Maple) / Accent (Coral)
-    // Using formatted strings to mix colors
-    console.log(
-      theme.secondary("  [Enter]") + theme.muted(" Run command")
+    // Compact menu on one line
+    process.stdout.write(
+      theme.secondary("[Enter]") + theme.muted(" Run  ") +
+      theme.secondary("[e]") + theme.muted(" Edit  ") +
+      theme.secondary("[Esc/q]") + theme.muted(" Cancel")
     );
-    console.log(
-      theme.secondary("  [e]    ") + theme.muted(" Edit command")
-    );
-    console.log(
-      theme.secondary("  [Esc/q]") + theme.muted(" Cancel")
-    );
-    console.log();
 
     // Set up raw mode to capture single keypresses
     if (process.stdin.isTTY) {
@@ -55,7 +46,7 @@ export async function confirmCommand(command: string): Promise<ConfirmResult> {
 
       // Escape or q
       if (key === "\u001b" || key === "q" || key === "\u0003") {
-        console.log(theme.warning("Cancelled"));
+        console.log("\n" + theme.warning("Cancelled"));
         resolve({ action: "cancel" });
         return;
       }
@@ -67,7 +58,7 @@ export async function confirmCommand(command: string): Promise<ConfirmResult> {
       }
 
       // Unknown key - treat as cancel
-      console.log(theme.warning("Cancelled"));
+      console.log("\n" + theme.warning("Cancelled"));
       resolve({ action: "cancel" });
     });
   });

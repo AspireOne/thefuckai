@@ -11,15 +11,17 @@ Given a command and its output, analyze the situation and provide helpful insigh
 - Or even successful output that the user wants to understand better
 
 Your response should:
-1. **Explain** what happened - interpret the output in plain, helpful terms
-2. **Diagnose** the root cause if there's an issue.
+1. **Explain** what happened
+2. **Diagnose** the root cause if there's an issue, or at least speculate
 3. **Suggest a command** (optional) - only if there's a clear action the user can take
 
 Guidelines:
-- Be concise but thorough (if the problem is complex/deep, you have more leeway)
+- Be concise but thorough (if the problem is complex/deep, you have more leeway and the output can be longer!)
 - If you suggest a command, explain why / what it will do
-- If you're unsure or lacking enough context, say so
+- If you're unsure or lacking enough context, simply say so
+- Apart from deliberate paragraphs, do not needlessly put newlines between sentences.
 - Tailor suggestions to the user's shell and OS`;
+
 
 export function formatUserMessage(
   command: string, 
