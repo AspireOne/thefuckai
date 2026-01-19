@@ -54,7 +54,9 @@ To use the `fuck` alias, run the setup command for your shell:
 ```bash
 tf-ai --setup
 ```
-Follow the instructions to add the function to your shell profile (PowerShell `$PROFILE`, `.bashrc`, etc).
+Follow the instructions to add the function to your shell profile:
+- **Windows**: PowerShell (`$PROFILE`)
+- **Linux/macOS**: Bash (`.bashrc`) or Zsh (`.zshrc`)
 
 ### 2. The "Fuck" Workflow
 

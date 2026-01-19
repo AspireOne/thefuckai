@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import { loadConfig, validateConfig, CONFIG_FILE } from "./config.js";
 import { analyzeCommandStream } from "./ai/index.js";
-import { powershell, detectEnvironment } from "./shell/index.js";
+import { getShell, detectEnvironment } from "./shell/index.js";
 import {
   printHeader,
   printSuggestion,
@@ -45,7 +45,7 @@ program
   }) => {
     // Show setup instructions
     if (options.setup) {
-      console.log(powershell.getSetupInstructions());
+      console.log(getShell().getSetupInstructions());
       return;
     }
 
@@ -77,7 +77,7 @@ program
 
     if (!command) {
       printVerbose("No command provided, checking shell history...", config.verbose);
-      const lastCmd = await powershell.getLastCommand();
+      const lastCmd = await getShell().getLastCommand();
       
       if (lastCmd) {
         command = lastCmd.command;

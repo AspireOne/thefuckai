@@ -10,17 +10,17 @@ export interface EnvironmentContext {
 }
 
 function detectShell(): EnvironmentContext["shell"] {
-  // Check for PowerShell-specific env var
-  if (process.env["PSModulePath"]) {
-    return "powershell";
-  }
-  
-  // Check SHELL env var (Unix-like systems)
+  // Check SHELL env var (Unix-like systems) - Check this FIRST to avoid false positives on Linux
   const shell = process.env["SHELL"];
   if (shell) {
     if (shell.includes("bash")) return "bash";
     if (shell.includes("zsh")) return "zsh";
     if (shell.includes("fish")) return "fish";
+  }
+
+  // Check for PowerShell-specific env var
+  if (process.env["PSModulePath"]) {
+    return "powershell";
   }
   
   // Check for CMD on Windows

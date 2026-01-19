@@ -3,6 +3,7 @@ import chalk from "chalk";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import { theme } from "./theme.js";
+import { getShell } from "../shell/index.js";
 
 const execAsync = promisify(exec);
 
@@ -93,22 +94,21 @@ export async function runCommand(command: string): Promise<void> {
   
   try {
     // Run the command and stream output
-    const { stdout, stderr } = await execAsync(
-      `powershell -Command "${command.replace(/"/g, '\\"')}"`,
-      { encoding: "utf-8" }
-    );
+    const { output, exitCode } = await getShell().executeCommand(command);
     
-    if (stdout) console.log(stdout);
-    if (stderr) console.error(theme.error(stderr));
+    // Parse stdout/stderr roughly from the combined output if possible, 
+    // but our adapters return combined output mostly.
+    // For now we just print the output.
+    if (output) console.log(output);
     
     console.log(theme.muted("─".repeat(40)));
-    console.log(theme.success("✓ Command completed"));
+    if (exitCode === 0) {
+        console.log(theme.success("✓ Command completed"));
+    } else {
+        console.log(theme.error(`✗ Command failed with exit code ${exitCode}`));
+    }
   } catch (error) {
-    const execError = error as { stdout?: string; stderr?: string; code?: number };
-    if (execError.stdout) console.log(execError.stdout);
-    if (execError.stderr) console.error(theme.error(execError.stderr));
-    
     console.log(theme.muted("─".repeat(40)));
-    console.log(theme.error(`✗ Command failed with exit code ${execError.code ?? 1}`));
+    console.log(theme.error(`✗ Command failed: ${error}`));
   }
 }
