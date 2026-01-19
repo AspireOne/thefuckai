@@ -73,6 +73,11 @@ export class PowerShellAdapter implements ShellAdapter {
 Add this to your PowerShell profile ($PROFILE):
 
 function fuck {
+    param(
+        [Alias("r")][switch]$Rerun,
+        [Alias("s")][switch]$Skip
+    )
+    
     # Get last 3 commands from history (for context)
     $historyItems = Get-History -Count 3
     $historyCommands = @()
@@ -98,24 +103,41 @@ function fuck {
     }
     $historyArg = ($historyJson | ConvertTo-Json -Compress) -replace '"', '\\\\"'
     
-    # Ask for confirmation before re-executing
-    Write-Host "Last command: " -NoNewline
-    Write-Host $lastCmd -ForegroundColor Cyan
-    $confirm = Read-Host "Re-run to capture output? (y/n)"
-    
     $output = ""
-    if ($confirm -eq "y" -or $confirm -eq "Y") {
-        # Re-execute last command to capture output
+    
+    # Handle flags: -r/--Rerun to auto-rerun, -s/--Skip to skip
+    if ($Rerun) {
+        Write-Host "Last command: " -NoNewline
+        Write-Host $lastCmd -ForegroundColor Cyan
+        Write-Host "Re-running to capture output..." -ForegroundColor Gray
         $output = try { 
             Invoke-Expression $lastCmd 2>&1 | Out-String 
         } catch { 
             $_.Exception.Message 
         }
-    } elseif ($confirm -eq "n" -or $confirm -eq "N") {
-        $output = "(output not captured - user skipped re-execution)"
+    } elseif ($Skip) {
+        Write-Host "Last command: " -NoNewline
+        Write-Host $lastCmd -ForegroundColor Cyan
+        Write-Host "Skipping re-execution (no output capture)" -ForegroundColor Gray
+        $output = "(output not captured - skipped via flag)"
     } else {
-        Write-Host "Cancelled" -ForegroundColor Yellow
-        return
+        # Interactive mode: ask for confirmation
+        Write-Host "Last command: " -NoNewline
+        Write-Host $lastCmd -ForegroundColor Cyan
+        $confirm = Read-Host "Re-run to capture output? (y/n)"
+        
+        if ($confirm -eq "y" -or $confirm -eq "Y") {
+            $output = try { 
+                Invoke-Expression $lastCmd 2>&1 | Out-String 
+            } catch { 
+                $_.Exception.Message 
+            }
+        } elseif ($confirm -eq "n" -or $confirm -eq "N") {
+            $output = "(output not captured - user skipped re-execution)"
+        } else {
+            Write-Host "Cancelled" -ForegroundColor Yellow
+            return
+        }
     }
     
     # Call tf-ai with captured command, output, and history
@@ -125,6 +147,13 @@ function fuck {
         tf-ai --command $lastCmd --output $output
     }
 }
+
+# Usage:
+#   fuck           - Interactive mode (prompts for confirmation)
+#   fuck -r        - Auto re-run last command to capture output
+#   fuck -Rerun    - Same as -r
+#   fuck -s        - Skip re-execution, analyze without output
+#   fuck -Skip     - Same as -s
 
 Then reload your profile:
 . $PROFILE

@@ -61,6 +61,28 @@ export class BashAdapter implements ShellAdapter {
 # Add this to your .bashrc or .zshrc:
 
 function fuck() {
+    local rerun=false
+    local skip=false
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r|--rerun)
+                rerun=true
+                shift
+                ;;
+            -s|--skip)
+                skip=true
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1"
+                echo "Usage: fuck [-r|--rerun] [-s|--skip]"
+                return 1
+                ;;
+        esac
+    done
+    
     # Get last 3 commands from history (for context)
     # fc -ln -3 gets the last 3 commands, sed removes leading whitespace
     local history_cmds
@@ -98,30 +120,43 @@ function fuck() {
         else
             history_json+=","
         fi
-        history_json+="{\\"command\\":\\"$cmd\\",\\"hasOutput\\":false}"
+        history_json+="{\\\"command\\\":\\\"$cmd\\\",\\\"hasOutput\\\":false}"
     done
     history_json+="]"
     
-    # Ask for confirmation before re-executing
-    echo -n "Last command: "
-    echo -e "\\033[36m$last_cmd\\033[0m"
-    echo -n "Re-run to capture output? (y/n/s to skip): "
-    read -r confirm
-    
     local TF_OUTPUT=""
-    case "$confirm" in
-        y|Y)
-            # Re-execute last command to capture output (stdout + stderr)
-            TF_OUTPUT=$($last_cmd 2>&1)
-            ;;
-        s|S|n|N)
-            TF_OUTPUT="(output not captured - user skipped re-execution)"
-            ;;
-        *)
-            echo "Cancelled"
-            return
-            ;;
-    esac
+    
+    # Handle flags: -r/--rerun to auto-rerun, -s/--skip to skip
+    if [ "$rerun" = true ]; then
+        echo -n "Last command: "
+        echo -e "\\033[36m$last_cmd\\033[0m"
+        echo -e "\\033[90mRe-running to capture output...\\033[0m"
+        TF_OUTPUT=$($last_cmd 2>&1)
+    elif [ "$skip" = true ]; then
+        echo -n "Last command: "
+        echo -e "\\033[36m$last_cmd\\033[0m"
+        echo -e "\\033[90mSkipping re-execution (no output capture)\\033[0m"
+        TF_OUTPUT="(output not captured - skipped via flag)"
+    else
+        # Interactive mode: ask for confirmation
+        echo -n "Last command: "
+        echo -e "\\033[36m$last_cmd\\033[0m"
+        echo -n "Re-run to capture output? (y/n): "
+        read -r confirm
+        
+        case "$confirm" in
+            y|Y)
+                TF_OUTPUT=$($last_cmd 2>&1)
+                ;;
+            n|N)
+                TF_OUTPUT="(output not captured - user skipped re-execution)"
+                ;;
+            *)
+                echo "Cancelled"
+                return
+                ;;
+        esac
+    fi
     
     # Call tf-ai with captured command, output, and history
     if [ "$cmd_count" -gt 1 ]; then
@@ -130,9 +165,15 @@ function fuck() {
         tf-ai --command "$last_cmd" --output "$TF_OUTPUT"
     fi
 }
+
+# Usage:
+#   fuck           - Interactive mode (prompts for confirmation)
+#   fuck -r        - Auto re-run last command to capture output
+#   fuck --rerun   - Same as -r
+#   fuck -s        - Skip re-execution, analyze without output
+#   fuck --skip    - Same as -s
 `.trim();
   }
 }
 
 export const bash = new BashAdapter();
-
