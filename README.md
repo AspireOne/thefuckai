@@ -1,16 +1,16 @@
 # tf-ai 🤖
 
-> *The AI-powered successor to `thefuck` — explains errors, fixes commands, and troubleshoots your terminal.*
+> *The AI-powered cheap copy of `thefuck`- explains errors, fixes commands, and troubleshoots the terminal.*
 
-**tf-ai** is a smart CLI tool that uses Large Language Models (LLMs) to analyze your terminal commands and their output. It understands your environment (Shell, OS, Project Type) to provide tailored explanations and fixes.
+**tf-ai** is a CLI tool that uses a LLM to analyze your terminal commands and their output.
 
-Run a command, fail, type `fuck`, and let AI handle the rest.
+Run a command, fail, type `fuck`, and let AI give you it's insight.
 
 ## ✨ Features
 
 - **🧠 Context-Aware Analysis**: Understanding not just *what* failed, but *where* (PowerShell vs Bash, Node.js vs Python project, etc).
 - **📝 Plain English Explanations**: Deciphers cryptic error codes and log spew into clear, actionable insights.
-- **⚡ Real-Time Streaming**: Watch the explanation appear instantly — no waiting for the full response.
+- **⚡ Real-Time Streaming**: It's not 2024 anymore. No waiting for the full response.
 - **🛠️ Smart Suggestions**: Offers corrected commands that match your specific shell syntax.
 - **🔌 Provider Agnostic**: Works with Anthropic (Claude), OpenAI (GPT-4), Google (Gemini), or any [Vercel AI SDK](https://sdk.vercel.ai) compatible provider.
 
@@ -39,7 +39,7 @@ npx tf-ai --help
    Create `~/.tf-ai/config.json`:
    ```json
    {
-     "model": "claude-3-5-sonnet-latest",
+     "model": "gpt-5.2",
      "confirmBeforeRun": true,
      "verbose": false
    }

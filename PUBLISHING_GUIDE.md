@@ -41,7 +41,7 @@ git push && git push --tags
 
 ### 3. Publish to NPM
 Run the publish command. This will automatically run `pnpm build` first because of the `prepublishOnly` script.
-```bash
+```bashT
 npm publish
 ```
 *If this is the very first publish, the package will be public by default unless you put `"private": true` (which we haven't).*
