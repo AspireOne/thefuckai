@@ -4,7 +4,7 @@ import { theme } from "./theme.js";
 
 const ICONS = {
   robot: "🤖",
-  lightbulb: "💡",
+  lightbulb: "", // note: remember to add space after it if adding icon
   command: "➜",
   warning: "⚠️",
   error: "❌",
@@ -51,7 +51,7 @@ export function finalizeStreaming(): void {
 }
 
 export function printSuggestion(suggestion: CommandSuggestion): void {
-  console.log(theme.suggestionLabel(`${ICONS.lightbulb} Suggested command:`));
+  console.log(theme.suggestionLabel(`${ICONS.lightbulb}Suggested command:`));
   console.log();
   // Using theme.command color
   console.log(theme.command(`  ${ICONS.command} ${suggestion.command}  `));

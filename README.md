@@ -70,7 +70,7 @@ PS> fuck
 🤖 tf-ai
    It looks like you made a typo. 'pussh' is not a valid git command.
 
-💡 Suggested command:
+💡Suggested command:
    ➜ git push origin main
 
    [Enter] Run  [e] Edit  [Esc] Cancel
