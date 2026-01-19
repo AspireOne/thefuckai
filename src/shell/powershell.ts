@@ -24,9 +24,28 @@ export class PowerShellAdapter implements ShellAdapter {
       return {
         command,
         output: "(Output not captured - use the 'fuck' shell function for full functionality)",
+        hasOutput: false,
       };
     } catch {
       return null;
+    }
+  }
+
+  async getCommandHistory(count: number): Promise<string[]> {
+    try {
+      const { stdout } = await execAsync(
+        `powershell -Command "(Get-History -Count ${count}).CommandLine"`,
+        { encoding: "utf-8" }
+      );
+      
+      const commands = stdout
+        .split(/\r?\n/)
+        .map(cmd => cmd.trim())
+        .filter(cmd => cmd.length > 0);
+      
+      return commands;
+    } catch {
+      return [];
     }
   }
 
@@ -54,21 +73,44 @@ export class PowerShellAdapter implements ShellAdapter {
 Add this to your PowerShell profile ($PROFILE):
 
 function fuck {
-    $lastCmd = (Get-History -Count 1).CommandLine
-    if (-not $lastCmd) {
+    # Get last 4 commands from history (for context)
+    $historyItems = Get-History -Count 4
+    $historyCommands = @()
+    foreach ($item in $historyItems) {
+        $historyCommands += $item.CommandLine
+    }
+    
+    if ($historyCommands.Count -eq 0) {
         Write-Host "No command in history" -ForegroundColor Red
         return
     }
     
-    # Re-execute to capture output
+    # The last command is the one we'll capture output for
+    $lastCmd = $historyCommands[-1]
+    
+    # Build history JSON (all commands except the last, which will have output)
+    $historyJson = @()
+    for ($i = 0; $i -lt $historyCommands.Count - 1; $i++) {
+        $historyJson += @{
+            command = $historyCommands[$i]
+            hasOutput = $false
+        }
+    }
+    $historyArg = ($historyJson | ConvertTo-Json -Compress) -replace '"', '\\"'
+    
+    # Re-execute last command to capture output
     $output = try { 
         Invoke-Expression $lastCmd 2>&1 | Out-String 
     } catch { 
         $_.Exception.Message 
     }
     
-    # Call tf-ai with captured command and output
-    tf-ai --command $lastCmd --output $output
+    # Call tf-ai with captured command, output, and history
+    if ($historyJson.Count -gt 0) {
+        tf-ai --command $lastCmd --output $output --history "$historyArg"
+    } else {
+        tf-ai --command $lastCmd --output $output
+    }
 }
 
 Then reload your profile:
@@ -78,3 +120,4 @@ Then reload your profile:
 }
 
 export const powershell = new PowerShellAdapter();
+

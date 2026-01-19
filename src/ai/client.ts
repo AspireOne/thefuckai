@@ -3,8 +3,9 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
 import type { Config } from "../config.js";
-import { SYSTEM_PROMPT, formatUserMessage } from "./prompts.js";
+import { SYSTEM_PROMPT, formatUserMessage, formatUserMessageWithHistory } from "./prompts.js";
 import { analysisResponseSchema, type AnalysisResponse } from "./schema.js";
+import type { CommandContext } from "../shell/types.js";
 
 export interface CommandSuggestion {
   command: string;
@@ -44,20 +45,27 @@ export interface StreamCallbacks {
 /**
  * Analyzes a command using streaming structured output.
  * Calls onExplanationUpdate as the explanation streams in.
+ * @param history - Optional array of previous commands (without output) for context
  */
 export async function analyzeCommandStream(
   command: string,
   output: string,
   config: Config,
   environment: EnvironmentContext,
-  callbacks: StreamCallbacks = {}
+  callbacks: StreamCallbacks = {},
+  history: CommandContext[] = []
 ): Promise<AnalysisResult> {
   const model = getModel(config);
+  
+  // Use history-aware formatter if history is provided
+  const prompt = history.length > 0
+    ? formatUserMessageWithHistory(command, output, history, environment)
+    : formatUserMessage(command, output, environment);
   
   const { partialOutputStream } = streamText({
     model,
     system: SYSTEM_PROMPT,
-    prompt: formatUserMessage(command, output, environment),
+    prompt,
     output: Output.object({ schema: analysisResponseSchema }),
   });
 
@@ -101,7 +109,9 @@ export async function analyzeCommand(
   command: string,
   output: string,
   config: Config,
-  environment: EnvironmentContext
+  environment: EnvironmentContext,
+  history: CommandContext[] = []
 ): Promise<AnalysisResult> {
-  return analyzeCommandStream(command, output, config, environment);
+  return analyzeCommandStream(command, output, config, environment, {}, history);
 }
+

@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { loadConfig, validateConfig, CONFIG_FILE } from "./config.js";
 import { analyzeCommandStream } from "./ai/index.js";
-import { getShell, detectEnvironment } from "./shell/index.js";
+import { getShell, detectEnvironment, type CommandContext } from "./shell/index.js";
 import {
   printHeader,
   printSuggestion,
@@ -33,6 +33,7 @@ program
   .option("-y, --yes", "Auto-run the suggested command without confirmation")
   .option("-v, --verbose", "Show verbose output")
   .option("--setup", "Show shell setup instructions")
+  .option("--history <json>", "JSON array of previous commands for context")
   .action(async (options: {
     command?: string;
     output?: string;
@@ -41,6 +42,7 @@ program
     yes?: boolean;
     verbose?: boolean;
     setup?: boolean;
+    history?: string;
   }) => {
     // Show setup instructions
     if (options.setup) {
@@ -108,6 +110,24 @@ program
       printVerbose(`Environment: ${JSON.stringify(envContext, null, 2)}`, true);
     }
     
+    // Parse command history if provided
+    let history: CommandContext[] = [];
+    if (options.history) {
+      try {
+        const parsed = JSON.parse(options.history);
+        if (Array.isArray(parsed)) {
+          history = parsed.map((item: { command: string; hasOutput?: boolean }) => ({
+            command: item.command,
+            output: "",
+            hasOutput: item.hasOutput ?? false,
+          }));
+          printVerbose(`Command history: ${history.length} previous commands`, config.verbose);
+        }
+      } catch (e) {
+        printVerbose(`Failed to parse history JSON: ${e}`, config.verbose);
+      }
+    }
+    
     try {
       let isFirstChunk = true;
       const result = await analyzeCommandStream(command, output, config, envContext, {
@@ -119,7 +139,7 @@ program
           // Stream using the polished UI function
           printStreamingExplanation(text);
         },
-      });
+      }, history);
       
       if (isFirstChunk) {
         animation.stop();

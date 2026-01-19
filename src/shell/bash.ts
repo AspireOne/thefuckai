@@ -15,6 +15,25 @@ export class BashAdapter implements ShellAdapter {
     return null; 
   }
 
+  async getCommandHistory(count: number): Promise<string[]> {
+    try {
+      // Use fc to get last N commands (works in bash and zsh)
+      const { stdout } = await execAsync(
+        `bash -c 'fc -ln -${count} | sed "s/^[[:space:]]*//"'`,
+        { encoding: "utf-8" }
+      );
+      
+      const commands = stdout
+        .split(/\r?\n/)
+        .map(cmd => cmd.trim())
+        .filter(cmd => cmd.length > 0);
+      
+      return commands;
+    } catch {
+      return [];
+    }
+  }
+
   async executeCommand(command: string): Promise<{ output: string; exitCode: number }> {
     try {
       // Use bash -c to execute. 
@@ -42,24 +61,61 @@ export class BashAdapter implements ShellAdapter {
 # Add this to your .bashrc or .zshrc:
 
 function fuck() {
-    # Get last command from history (ignores leading spaces)
-    # 'fc -ln -1' gets the last command, 'sed' removes leading whitespace
-    TF_CMD=$(fc -ln -1 | sed 's/^[[:space:]]*//')
+    # Get last 4 commands from history (for context)
+    # fc -ln -4 gets the last 4 commands, sed removes leading whitespace
+    local history_cmds
+    history_cmds=$(fc -ln -4 2>/dev/null | sed 's/^[[:space:]]*//')
     
-    if [ -z "$TF_CMD" ]; then
+    if [ -z "$history_cmds" ]; then
         echo "No command in history"
         return
     fi
-
-    # Re-execute to capture output (stdout + stderr)
-    # We use a subshell to capture combined output
-    TF_OUTPUT=$($TF_CMD 2>&1)
     
-    # Call tf-ai with captured command and output
-    tf-ai --command "$TF_CMD" --output "$TF_OUTPUT"
+    # Convert to array (one command per line)
+    local -a cmds
+    while IFS= read -r line; do
+        [ -n "$line" ] && cmds+=("$line")
+    done <<< "$history_cmds"
+    
+    local cmd_count=\${#cmds[@]}
+    if [ "$cmd_count" -eq 0 ]; then
+        echo "No command in history"
+        return
+    fi
+    
+    # The last command is the one we'll capture output for
+    local last_cmd="\${cmds[$((cmd_count-1))]}"
+    
+    # Build history JSON (all commands except the last)
+    local history_json="["
+    local first=true
+    for ((i=0; i<cmd_count-1; i++)); do
+        local cmd="\${cmds[$i]}"
+        # Escape quotes and backslashes for JSON
+        cmd=\$(printf '%s' "$cmd" | sed 's/\\\\/\\\\\\\\/g; s/"/\\\\"/g')
+        if [ "$first" = true ]; then
+            first=false
+        else
+            history_json+=","
+        fi
+        history_json+="{\\"command\\":\\"$cmd\\",\\"hasOutput\\":false}"
+    done
+    history_json+="]"
+    
+    # Re-execute last command to capture output (stdout + stderr)
+    local TF_OUTPUT
+    TF_OUTPUT=$($last_cmd 2>&1)
+    
+    # Call tf-ai with captured command, output, and history
+    if [ "$cmd_count" -gt 1 ]; then
+        tf-ai --command "$last_cmd" --output "$TF_OUTPUT" --history "$history_json"
+    else
+        tf-ai --command "$last_cmd" --output "$TF_OUTPUT"
+    fi
 }
 `.trim();
   }
 }
 
 export const bash = new BashAdapter();
+
