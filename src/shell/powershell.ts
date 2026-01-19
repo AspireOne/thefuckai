@@ -101,7 +101,7 @@ function fuck {
     # Ask for confirmation before re-executing
     Write-Host "Last command: " -NoNewline
     Write-Host $lastCmd -ForegroundColor Cyan
-    $confirm = Read-Host "Re-run to capture output? (y/n/s to skip)"
+    $confirm = Read-Host "Re-run to capture output? (y/n)"
     
     $output = ""
     if ($confirm -eq "y" -or $confirm -eq "Y") {
@@ -111,7 +111,7 @@ function fuck {
         } catch { 
             $_.Exception.Message 
         }
-    } elseif ($confirm -eq "s" -or $confirm -eq "S" -or $confirm -eq "n" -or $confirm -eq "N") {
+    } elseif ($confirm -eq "n" -or $confirm -eq "N") {
         $output = "(output not captured - user skipped re-execution)"
     } else {
         Write-Host "Cancelled" -ForegroundColor Yellow
