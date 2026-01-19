@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@ai-sdk/anthropic':
         specifier: ^3.0.15
-        version: 3.0.15(zod@4.3.5)
+        version: 3.0.15(zod@3.25.76)
       '@ai-sdk/google':
         specifier: ^3.0.10
-        version: 3.0.10(zod@4.3.5)
+        version: 3.0.10(zod@3.25.76)
       '@ai-sdk/openai':
         specifier: ^3.0.12
-        version: 3.0.12(zod@4.3.5)
+        version: 3.0.12(zod@3.25.76)
       ai:
         specifier: ^6.0.39
-        version: 6.0.39(zod@4.3.5)
+        version: 6.0.39(zod@3.25.76)
       chalk:
         specifier: ^5.0.0
         version: 5.6.2
@@ -28,13 +28,13 @@ importers:
         version: 12.1.0
       openai:
         specifier: ^4.0.0
-        version: 4.104.0(zod@4.3.5)
+        version: 4.104.0(zod@3.25.76)
       ora:
         specifier: ^9.0.0
         version: 9.0.0
       zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -843,42 +843,42 @@ packages:
     resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
     engines: {node: '>=18'}
 
-  zod@4.3.5:
-    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
-  '@ai-sdk/anthropic@3.0.15(zod@4.3.5)':
+  '@ai-sdk/anthropic@3.0.15(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
-      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
-      zod: 4.3.5
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
+      zod: 3.25.76
 
-  '@ai-sdk/gateway@3.0.16(zod@4.3.5)':
+  '@ai-sdk/gateway@3.0.16(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
-      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
       '@vercel/oidc': 3.1.0
-      zod: 4.3.5
+      zod: 3.25.76
 
-  '@ai-sdk/google@3.0.10(zod@4.3.5)':
+  '@ai-sdk/google@3.0.10(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
-      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
-      zod: 4.3.5
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
+      zod: 3.25.76
 
-  '@ai-sdk/openai@3.0.12(zod@4.3.5)':
+  '@ai-sdk/openai@3.0.12(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
-      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
-      zod: 4.3.5
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
+      zod: 3.25.76
 
-  '@ai-sdk/provider-utils@4.0.8(zod@4.3.5)':
+  '@ai-sdk/provider-utils@4.0.8(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 4.3.5
+      zod: 3.25.76
 
   '@ai-sdk/provider@3.0.4':
     dependencies:
@@ -1082,13 +1082,13 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@6.0.39(zod@4.3.5):
+  ai@6.0.39(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 3.0.16(zod@4.3.5)
+      '@ai-sdk/gateway': 3.0.16(zod@3.25.76)
       '@ai-sdk/provider': 3.0.4
-      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
-      zod: 4.3.5
+      zod: 3.25.76
 
   ansi-regex@6.2.2: {}
 
@@ -1322,7 +1322,7 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@4.104.0(zod@4.3.5):
+  openai@4.104.0(zod@3.25.76):
     dependencies:
       '@types/node': 18.19.130
       '@types/node-fetch': 2.6.13
@@ -1332,7 +1332,7 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0
     optionalDependencies:
-      zod: 4.3.5
+      zod: 3.25.76
     transitivePeerDependencies:
       - encoding
 
@@ -1509,4 +1509,4 @@ snapshots:
 
   yoctocolors@2.1.2: {}
 
-  zod@4.3.5: {}
+  zod@3.25.76: {}

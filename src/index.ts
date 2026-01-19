@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { Command } from "commander";
 import { loadConfig, validateConfig, CONFIG_FILE } from "./config.js";
 import { analyzeCommandStream } from "./ai/index.js";
